@@ -9,4 +9,8 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  server: {
+    allowedHosts: ['access2edu.zapto.org', 'localhost', 'access2edu.me'],
+  }
 })
+
