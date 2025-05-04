@@ -17,6 +17,8 @@ export const initiateBankPayment = (paymentData) =>
   api.post('/api/v1/students/card-payment', paymentData);
 export const verifyPayment = (data) => api.post('/api/v1/students/verify-payment', data);
 export const sendForgotPasswordOTP = (email) =>
-  api.post('/api/v1/admin/send-forgot-password-otp', { email });
+  api.post('/api/v1/students/send-forgot-password-otp', { email });
 export const forgotPassword = (otp, newPassword) =>
   api.post('/api/v1/admin/send-forgot-password-otp', { otp, newPassword });
+
+export const googleAuth = (credentials) => api.post('/api/v1/students/google-auth', credentials);
