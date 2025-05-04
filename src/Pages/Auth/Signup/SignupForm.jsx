@@ -7,10 +7,12 @@ import "./Signup.css";
 
 function SignupForm() {
   const [formData, setFormData] = useState({
-    fName: "",
-    lName: "",
-    email: "",
-    gName: "",
+    firstName: "",
+    lastName: "",
+    otherName: "",
+    level: "",
+    parent_guardian: "",
+    email: "",    
     password: "",
     confirmPassword: "",
   }); // Form Data
@@ -71,10 +73,12 @@ function SignupForm() {
     setIsSubmitting(true);
 
     if (
-      !formData.fName ||
-      !formData.lName ||
-      !formData.email ||
-      !formData.gName ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.otherName ||
+      !formData.level ||
+      !formData.parent_guardian ||
+      !formData.email ||      
       !formData.password ||
       !formData.confirmPassword
     ) {
@@ -124,28 +128,70 @@ function SignupForm() {
     <form onSubmit={handleSubmit} action="" className="grid gap-3 p-6">
       {/* First Name */}
       <div className="grid gap-2">
-        <label htmlFor="fName">Firstname</label>
+        <label htmlFor="firstName">Firstname</label>
         <input
           type="text"
-          name="fName"
-          id="fName"
+          name="firstName"
+          id="firstName"
           placeholder="Firstname"
           className="p-4 border-1 border-[#7c7c7c] rounded-md"
-          value={formData.fName}
+          value={formData.firstName}
           onChange={handleChange}
         />
       </div>
 
       {/* Last Name */}
       <div className="grid gap-2">
-        <label htmlFor="lName">Surname</label>
+        <label htmlFor="lastName">Surname</label>
         <input
           type="text"
-          name="lName"
-          id="lName"
+          name="lastName"
+          id="lastName"
           placeholder="Surname"
           className="p-4 border-1 border-[#7c7c7c] rounded-md"
-          value={formData.lName}
+          value={formData.lastName}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* Other Name */}
+      <div className="grid gap-2">
+        <label htmlFor="lastName">Other Name</label>
+        <input
+          type="text"
+          name="otherName"
+          id="otherName"
+          placeholder="Other Name"
+          className="p-4 border-1 border-[#7c7c7c] rounded-md"
+          value={formData.otherName}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* Level */}
+      <div className="grid gap-2">
+        <label htmlFor="lastName">Level</label>
+        <input
+          type="text"
+          name="level"
+          id="level"
+          placeholder="Level"
+          className="p-4 border-1 border-[#7c7c7c] rounded-md"
+          value={formData.level}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* Parent Guardian */}
+      <div className="grid gap-2">
+        <label htmlFor="parent_guardian">Parent/Guardian</label>
+        <input
+          type="text"
+          name="parent_guardian"
+          id="parent_guardian"
+          placeholder="Parent/Guardian Name"
+          className="p-4 border-1 border-[#7c7c7c] rounded-md"
+          value={formData.parent_guardian}
           onChange={handleChange}
         />
       </div>
