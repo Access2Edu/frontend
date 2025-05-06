@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderWeb from "../../components/HeaderWeb";
-import { initiatePayment } from "../../services/studentServices";
+import { initializePayment } from "../../Payment"; // Import API function
 import { useAuth } from "../../AuthContext";
 import ConfirmedExamPayment from "./ConfirmedExamPayment";
 
 function AssessmentMobile() {
-  const { user } = useAuth(); // Access the logged-in user's email
+  const { student } = useAuth(); // Access the logged-in user's email
   //Slide
   const [step, setStep] = useState(1);
   const totalSteps = 4;
@@ -21,44 +21,25 @@ function AssessmentMobile() {
   const PayButton = () => {
     const handlePayment = async () => {
       try {
-        // Use initiatePayment from studentServices
-        const res = await initiatePayment({ email: user.email, amount });
-        const { publicKey, email: userEmail, amount: amt, ref } = res.data;
-
-        const paystack = window.PaystackPop.setup({
-          key: publicKey,
-          email: userEmail,
-          amount: amt * 100, // Paystack uses kobo
-          currency: "NGN",
-          ref,
-          callback: (response) => {
-            alert("Payment complete! Reference: " + response.reference);
-            // Optionally, send response.reference to backend to verify
-          },
-          onClose: () => {
-            alert("Payment window closed.");
-          },
-        });
-
-        paystack.openIframe();
+        const payload = {
+          email: "user@example.com",
+          amount: 5000,
+          name: "John Doe",
+        };
+        const res = await initializePayment(payload);
+        if (res.status === "success") {
+          window.location.href = res.data.link;
+        } else {
+          alert("Payment initialization failed.");
+        }
       } catch (err) {
-        console.error("Error initiating payment:", err);
-        alert("Failed to initiate payment. Please try again.");
+        alert("Error initializing payment");
       }
     };
-
-    return (
-      <div>
-        {/* Payment Button */}
-        <button
-          onClick={handlePayment}
-          className="bg-[#785491] text-white w-full hover:bg-[#f3eff8] hover:text-[#3d3d3d] px-4 py-4 font-semibold rounded-lg"
-        >
-          Make Payment
-        </button>
-      </div>
-    );
+    return <button onClick={handlePayment} className="px-4 py-2 bg-[#78549d] cursor-pointer text-white rounded-lg">Pay with Flutterwave</button>;
   };
+
+
 
   //Date and Time
   const [dateTime, setDateTime] = useState(new Date());

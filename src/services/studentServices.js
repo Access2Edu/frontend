@@ -27,4 +27,14 @@ export const sendForgotPasswordOTP = (email) =>
 export const forgotPassword = (otp, newPassword) =>
   api.post('/api/v1/admin/send-forgot-password-otp', { otp, newPassword });
 
-export const googleAuth = (credentials) => api.post('/api/v1/students/google-auth', credentials);
+
+//Google Login
+export const loginWithGoogle = async (idToken) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/auth/google`, { idToken });
+    return response.data;
+  } catch (error) {
+    console.error('Google Login Failed:', error.response?.data || error.message);
+    throw error;
+  }
+};

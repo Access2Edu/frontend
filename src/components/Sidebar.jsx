@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home } from "lucide-react";
+import { Home, LogOutIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Subject as SubjectIcon,
@@ -66,6 +66,8 @@ function Sidebar() {
   const navigate = useNavigate();
   const { setStudent } = useAuth();
 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("student");
@@ -75,7 +77,13 @@ function Sidebar() {
     navigate("/login");
   };
 
+  const openModal = () => {
+    setIsModalOpen(true); // Open the modal
+  };
 
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
 
   return (
     //Sidebar
@@ -126,11 +134,44 @@ function Sidebar() {
       </div>
       <div className="flex justify-between pl-6 pr-6 pb-15 text-[#f5f5f5]  items-center">
         <LiveDate />
-        <div className="flex gap-2 cursor-pointer text-sm" onClick={handleLogout}>
+        <div className="flex gap-2 cursor-pointer text-sm" onClick={openModal}>
           <LogoutIcon />
           <p>Sign Out</p>
         </div>
       </div>
+
+
+      {/* Confirmation Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-800/50 flex items-center justify-center z-50">
+          <div className="bg-[#fffbeb] p-6 rounded-3xl text-center flex flex-col justify-items-center justify-center shadow-lg w-96 h-80">
+            <div className="flex justify-center text-red-600">
+              <LogOutIcon width={80} height={80} /> 
+            </div>
+            
+            
+            <h2 className="text-lg font-semibold mt-4">Confirm Logout</h2>
+            <p className="text-gray-600 my-2">Are you sure you want to log out?</p>
+            <div className="flex justify-between mt-6 gap-4">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  closeModal();
+                  handleLogout();
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Yes, Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

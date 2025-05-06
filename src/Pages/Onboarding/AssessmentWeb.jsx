@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderWeb from "../../components/HeaderWeb";
-import { initiatePayment } from "../../services/studentServices"; // Import API function
+import { initializePayment } from "../../Payment"; // Import API function
+
 import { useAuth } from "../../AuthContext"; // Import useAuth hook
 
 import ConfirmedExamPayment from "./ConfirmedExamPayment";
-
 
 function AssessmentWeb() {
   const { student } = useAuth(); // Access the logged-in user's email
@@ -14,62 +14,33 @@ function AssessmentWeb() {
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
 
-  // State for error message
-  const [errorMessage, setErrorMessage] = useState("");
-
   const navigate = useNavigate();
 
+  const [errorMessage, setErrorMessage] = useState(""); // State for error message
+
   //Payment Button
-  const PayButton = ({ amount }) => {
+  const PayButton = () => {
     const handlePayment = async () => {
-      console.log("Payment button clicked with amount:", amount);
       try {
-        const res = await initiatePayment({ email: student.email, amount });
-        console.log("Response from initiatePayment:", res);
-    
-        const { publicKey, email: userEmail, amount: amt, ref, message } = res.data;
-    
-        if (message) {
-          alert(message);
+        const payload = {
+          email: "user@example.com",
+          amount: 5000,
+          name: "John Doe",
+        };
+        const res = await initializePayment(payload);
+        if (res.status === "success") {
+          window.location.href = res.data.link;
+        } else {
+          alert("Payment initialization failed.");
         }
-    
-        if (!window.PaystackPop) {
-          console.error("Paystack library not loaded");
-          return;
-        }
-    
-        const paystack = window.PaystackPop.setup({
-          key: publicKey,
-          email: userEmail,
-          amount: amt * 100, // Paystack uses kobo
-          currency: "NGN",
-          ref,
-          callback: (response) => {
-            alert("Payment complete! Reference: " + response.reference);
-          },
-          onClose: () => {
-            alert("Payment window closed.");
-          },
-        });
-    
-        paystack.openIframe();
       } catch (err) {
-        console.error("Error initiating payment:", err);
-        alert(err.response?.data?.message || "Failed to initiate payment. Please try again.");
+        alert("Error initializing payment");
       }
     };
-  
-    return (
-      <div>
-        <button
-          onClick={handlePayment}
-          className="bg-[#785491] text-white w-full hover:bg-[#f3eff8] hover:text-[#3d3d3d] px-4 py-4 font-semibold rounded-lg"
-        >
-          Make Payment
-        </button>
-      </div>
-    );
+    return <button onClick={handlePayment} className="px-4 py-2 bg-[#78549d] cursor-pointer text-white rounded-lg">Pay with Flutterwave</button>;
   };
+
+
 
   //Date and Time
   const [dateTime, setDateTime] = useState(new Date());

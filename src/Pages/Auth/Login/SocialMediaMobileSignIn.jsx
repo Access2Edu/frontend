@@ -2,9 +2,8 @@ import React, { useEffect } from "react";
 import "./Login.css";
 import { loginWithGoogle } from "../../../services/studentServices";
 
-function SocialMediaWebSignIn() {
+function SocialMediaMobileSignIn() {
   
-
   useEffect(() => {
     /* global google */
     window.google.accounts.id.initialize({
@@ -40,4 +39,4 @@ function SocialMediaWebSignIn() {
 
 }
 
-export default SocialMediaWebSignIn;
+export default SocialMediaMobileSignIn;

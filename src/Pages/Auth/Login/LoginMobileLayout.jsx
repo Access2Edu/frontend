@@ -1,6 +1,6 @@
 import React from "react";
 import "./Login.css";
-import SocialMediaSignIn from "./SocialMediaSignIn";
+import SocialMediaMobileSignIn from "./SocialMediaMobileSignIn";
 import LoginForm from "./LoginForm";
 
 function LoginMobileLayout() {
@@ -25,7 +25,14 @@ function LoginMobileLayout() {
         </p>
       </div>
 
-      <SocialMediaSignIn />
+      <SocialMediaMobileSignIn />
+
+      <div className="flex justify-center items-center pt-4">
+        <hr className="w-1/3 mr-2 border-[#785491]" />
+        <p className="text-[#785491] font-semibold"> OR </p>
+        <hr className="w-1/3 ml-2 border-[#785491]" />
+      </div>
+      
       <LoginForm />
     </div>
   );
