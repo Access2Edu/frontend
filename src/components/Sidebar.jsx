@@ -14,6 +14,7 @@ import {
 import LiveDate from "./LiveDate";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 const SIDEBAR_ITEMS = [
   {
@@ -63,6 +64,7 @@ const SIDEBAR_ITEMS = [
 function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setStudent } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");

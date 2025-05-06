@@ -21,7 +21,7 @@ import VideoRecord from './Pages/Dashboard/VideoRecord';
 import Result from './Pages/Dashboard/Result';
 import Fees from './Pages/Dashboard/Fees';
 import Settings from './Pages/Dashboard/Settings';
-
+import ProtectedRoute from './ProtectedRoute';
 
 
 // Import global styles
