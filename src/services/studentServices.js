@@ -15,11 +15,16 @@ export const getAllSubjects = () => api.get('/api/v1/students/get-all-subject');
 export const initiatePayment = (paymentData) =>
   api.post('/api/v1/payment/initiatePayment', paymentData);
 
-export const verifyPayment = (data) => api.post('/api/v1/payment/initiatePayment', data);
+export const verifySignupOTP = (data) => api.post('api/v1/students/verify-signup-otp', data);
 
 export const initiateBankPayment = (paymentData) =>
   api.post('/api/v1/students/card-payment', paymentData);
 
+
+export const sendSignUpOTP = (email) =>
+  api.post('api/v1/students/send-signup-otp', { email });
+
+export const verifyPayment = (data) => api.post('/api/v1/payment/initiatePayment', data);
 
 
 export const sendForgotPasswordOTP = (email) =>

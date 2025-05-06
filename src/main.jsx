@@ -22,6 +22,7 @@ import Result from './Pages/Dashboard/Result';
 import Fees from './Pages/Dashboard/Fees';
 import Settings from './Pages/Dashboard/Settings';
 import ProtectedRoute from './ProtectedRoute';
+import SignupVerification from './Pages/Auth/Signup/SignUpVerification';
 
 
 // Import global styles
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <Signup />,
+  },
+  {
+    path: '/signup-verification',
+    element: <SignupVerification />,    
   },
   {
     path: '/signup-confirmation',

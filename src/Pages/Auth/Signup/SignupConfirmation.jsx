@@ -20,7 +20,7 @@ function SignupConfirmationWeb() {
         </p>
         <p className="font-medium text-[#464646] text-2xl">Access2Edu</p>
         <button
-          onClick={() => navigate("/select-classes")}
+          onClick={() => navigate("/login")}
           className="bg-[#BCA0D2] p-4 mt-5 rounded-lg hover:bg-[#785491] text-[#000000] hover:text-white"
         >
           Continue
@@ -51,7 +51,7 @@ function SignupConfimationMobile() {
         </div>
 
         <button
-          onClick={() => navigate("/select-classes")}
+          onClick={() => navigate("/login")}
           className="p-4 mt-5 rounded-lg bg-[#785491] text-white"
         >
           Continue

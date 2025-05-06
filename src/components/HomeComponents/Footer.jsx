@@ -1,5 +1,6 @@
 import React from "react";
 import "../../styles/global.css"; // or wherever your CSS file is located
+import { Mail, Phone, PhoneIcon } from "lucide-react";
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -17,12 +18,16 @@ const Footer = () => {
           </p>
           <div className="contact-details">
             <div className="contact-item">
-              <span>📧 :</span>
-              <span>Access2Edu001@gmail.com</span>
+              <Mail />
+              <a href="mailto:support@acccess2edu.me">support@acccess2edu.me</a>
+              
             </div>
             <div className="contact-item">
-              <span>📞 :</span>
-              <span>+234 9112465677</span>
+              
+              <PhoneIcon />
+              <a href="tel:+2349112465677">090 1124 6577</a>
+            
+             
             </div>
           </div>
         </div>
@@ -55,6 +60,7 @@ const Footer = () => {
           <h4>Our Socials</h4>
           <div className="social-icons">
             <a href="#" target="_blank" rel="noopener noreferrer">
+              
               <img src="/images/instagram-icon.png" alt="Instagram" />
             </a>
             <a href="#" target="_blank" rel="noopener noreferrer">
