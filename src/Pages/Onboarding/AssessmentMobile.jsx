@@ -1,82 +1,64 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderWeb from "../../components/HeaderWeb";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { initiateCardPayment } from "../../services/studentServices";
+import { initiatePayment } from "../../services/studentServices";
+import { useAuth } from "../../AuthContext";
 import ConfirmedExamPayment from "./ConfirmedExamPayment";
-import axios from "axios";
 
 function AssessmentMobile() {
+  const { user } = useAuth(); // Access the logged-in user's email
   //Slide
   const [step, setStep] = useState(1);
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
-
-  
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
 
   // State for error message
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
-//Payment Button
-const PayButton = ({ email, amount }) => {
-  const handlePayment = async () => {
-    try {
-      // Clear any previous error message
-      setErrorMessage("");
+  //Payment Button
+  const PayButton = () => {
+    const handlePayment = async () => {
+      try {
+        // Use initiatePayment from studentServices
+        const res = await initiatePayment({ email: user.email, amount });
+        const { publicKey, email: userEmail, amount: amt, ref } = res.data;
 
-      // Fetch data from backend
-      const res = await axios.post(
-        "http://localhost:5000/api/create-payment",
-        {
-          email,
-          amount,
-        }
-      );
-      const { publicKey, email: userEmail, amount: amt, ref } = res.data;
+        const paystack = window.PaystackPop.setup({
+          key: publicKey,
+          email: userEmail,
+          amount: amt * 100, // Paystack uses kobo
+          currency: "NGN",
+          ref,
+          callback: (response) => {
+            alert("Payment complete! Reference: " + response.reference);
+            // Optionally, send response.reference to backend to verify
+          },
+          onClose: () => {
+            alert("Payment window closed.");
+          },
+        });
 
-      const paystack = window.PaystackPop.setup({
-        key: publicKey,
-        email: userEmail,
-        amount: amt * 100, // Paystack uses kobo
-        currency: "NGN",
-        ref,
-        callback: (response) => {
-          alert("Payment complete! Reference: " + response.reference);
-          // Optionally, send response.reference to backend to verify
-        },
-        onClose: () => {
-          handleNext(); // Proceed to the next step when payment is closed
-        },
-      });
-      paystack.openIframe();
-    } catch (error) {
-      // Handle network or API errors
-      setErrorMessage(
-        "Failed to initiate payment. Please check your network connection and try again."
-      );
-      console.error("Payment error:", error);
-    }
+        paystack.openIframe();
+      } catch (err) {
+        console.error("Error initiating payment:", err);
+        alert("Failed to initiate payment. Please try again.");
+      }
+    };
+
+    return (
+      <div>
+        {/* Payment Button */}
+        <button
+          onClick={handlePayment}
+          className="bg-[#785491] text-white w-full hover:bg-[#f3eff8] hover:text-[#3d3d3d] px-4 py-4 font-semibold rounded-lg"
+        >
+          Make Payment
+        </button>
+      </div>
+    );
   };
-
-  return (
-    <div>
-      {/* Payment Button */}
-      <button
-        onClick={handlePayment}
-        className="bg-[#785491] text-white w-full hover:bg-[#f3eff8] hover:text-[#3d3d3d] px-4 py-4 font-semibold rounded-lg"
-      >
-        Make Payment
-      </button>
-    </div>
-  );
-};
-
 
   //Date and Time
   const [dateTime, setDateTime] = useState(new Date());
@@ -133,7 +115,7 @@ const PayButton = ({ email, amount }) => {
         Welcome To Access2Edu Entrance Exam
       </h2>
       <p className="text-lg mb-6">
-      Access2Edu is a special platform designed to give every child—regardless
+        Access2Edu is a special platform designed to give every child—regardless
         of their background or qualifications—a fair chance at quality
         education. We believe that every child deserves the opportunity to
         learn, grow, and succeed, no matter their circumstances.
@@ -141,15 +123,15 @@ const PayButton = ({ email, amount }) => {
       <div>
         <p className="font-semibold mb-2">Here's What To Expect</p>
         <ul className="list-disc ml-5 space-y-1 text-gray-700">
-        <li>The exam will take about 45 minutes.</li>
-        <li>To take the exam, a registration fee of ₦2,000 is required.</li>
+          <li>The exam will take about 45 minutes.</li>
+          <li>To take the exam, a registration fee of ₦2,000 is required.</li>
         </ul>
       </div>
     </div>,
 
     //Slide Two
     <div key="2">
-      <div  className="grid gap-4 ">  
+      <div className="grid gap-4 ">
         <div className="grid gap-4 pb-12">
           <div className="p-6 bg-[#fcf8ef] rounded-2xl shadow-[0px_1px_6px_0px_rgba(0,_0,_0,_0.1)]">
             <p className="text-center pb-8 pt-4 font-semibold">
@@ -168,7 +150,7 @@ const PayButton = ({ email, amount }) => {
                 Access2Edu is changing the way students learn, no matter where
                 they are. our platform{" "}
               </p>
-            </div>            
+            </div>
           </div>
           <div className="text-center bg-[#fcf8ef] rounded-2xl p-6 pb-2 shadow-[0px_1px_6px_0px_rgba(0,_0,_0,_0.1)]">
             <p className="pb-2">{dayOfWeek}</p>
@@ -183,16 +165,14 @@ const PayButton = ({ email, amount }) => {
               {errorMessage}
             </div>
           )}
-          
-          <PayButton />
+
+          <PayButton amount={2000} />
 
           <ConfirmedExamPayment
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             handleContinue={handleNext}
           />
-
-          
         </div>
       </div>
     </div>,
@@ -230,7 +210,6 @@ const PayButton = ({ email, amount }) => {
         just take our word for it, see what our students have to say! Ready to
         start your journey? Join us today.
       </p>
-      
     </div>,
   ];
 
@@ -272,22 +251,19 @@ const PayButton = ({ email, amount }) => {
               <button
                 onClick={handleNext}
                 className="bg-[#785491] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#e7def0] hover:text-[#3d3d3d]"
-                disabled={step === 2 && !isPaymentSuccessful} //Check if payment is successful
+                disabled={step === 2} //Check if payment is successful
               >
-                {step === 2  ? "Continue" : "Get Started"} 
-                
+                {step === 2 ? "Continue" : "Get Started"}
               </button>
             )}
-            { step === totalSteps && (
+            {step === totalSteps && (
               <button
-              onClick={() => navigate("/exam-page")} //Navigate to Exam Page
-              className="bg-[#785491] text-white px-6 py-2 rounded-md font-semibold justify-self-end hover:bg-[#e7def0] hover:text-[#3d3d3d]"
-            >
-              Start Exam
-            </button>
-            )
-
-            }
+                onClick={() => navigate("/exam-page")} //Navigate to Exam Page
+                className="bg-[#785491] text-white px-6 py-2 rounded-md font-semibold justify-self-end hover:bg-[#e7def0] hover:text-[#3d3d3d]"
+              >
+                Start Exam
+              </button>
+            )}
           </div>
         </div>
       </div>

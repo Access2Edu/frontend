@@ -39,23 +39,23 @@ function ForgotPasswordWebForm() {
       return;
     }
 
-    try {    
-
-      // Send OTP request to the API
-      await sendForgotPasswordOTP(email);
-      setAlert({
-        type: "success",
-        message: "OTP sent successfully. Check your email.",
-      });
-      setTimer(60);
-      setCanResend(false);
-      setStep("otp");
-    } catch (err) {
-      setAlert({
-        type: "error",
-        message: err.response?.data?.message || "Failed to send OTP.",
-      });
-    }
+    try {
+          // Send OTP request to the API
+          const response = await sendForgotPasswordOTP(email); // Capture the response from the backend
+          setAlert({
+            type: "success",
+            message:
+              response.data?.message || "OTP sent successfully. Check your email.", // Use backend message or fallback
+          });
+          setTimer(60);
+          setCanResend(false);
+          setStep("otp");
+        } catch (err) {
+          setAlert({
+            type: "error",
+            message: err.response?.data?.message || "Failed to send OTP.",
+          });
+        }
   }
 
   function handleOtpChange(value, index) {
@@ -77,10 +77,10 @@ function ForgotPasswordWebForm() {
 
     try {
       // Verify OTP with the API
-      await forgotPassword(otpValue, null); // Pass OTP only for verification
+      const response = await forgotPassword(otpValue, null); // Pass OTP only for verification
       setAlert({
         type: "success",
-        message: "OTP verified. Redirecting to reset password...",
+        message:  response.data?.message || "OTP verified. Redirecting to reset password...",
       });
       setTimeout(() => navigate("/reset-password"), 1500);
     } catch (err) {

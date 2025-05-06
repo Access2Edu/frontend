@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderWeb from "../../components/HeaderWeb";
+import { initiatePayment } from "../../services/studentServices"; // Import API function
+import { useAuth } from "../../AuthContext"; // Import useAuth hook
 
 import ConfirmedExamPayment from "./ConfirmedExamPayment";
-import axios from "axios";
+
 
 function AssessmentWeb() {
+  const { student } = useAuth(); // Access the logged-in user's email
   //Slide
   const [step, setStep] = useState(1);
   const totalSteps = 4;
@@ -17,22 +20,24 @@ function AssessmentWeb() {
   const navigate = useNavigate();
 
   //Payment Button
-  const PayButton = ({ email, amount }) => {
+  const PayButton = ({ amount }) => {
     const handlePayment = async () => {
+      console.log("Payment button clicked with amount:", amount);
       try {
-        // Clear any previous error message
-        setErrorMessage("");
-
-        // Fetch data from backend
-        const res = await axios.post(
-          "http://localhost:5000/api/create-payment",
-          {
-            email,
-            amount,
-          }
-        );
-        const { publicKey, email: userEmail, amount: amt, ref } = res.data;
-
+        const res = await initiatePayment({ email: student.email, amount });
+        console.log("Response from initiatePayment:", res);
+    
+        const { publicKey, email: userEmail, amount: amt, ref, message } = res.data;
+    
+        if (message) {
+          alert(message);
+        }
+    
+        if (!window.PaystackPop) {
+          console.error("Paystack library not loaded");
+          return;
+        }
+    
         const paystack = window.PaystackPop.setup({
           key: publicKey,
           email: userEmail,
@@ -41,25 +46,21 @@ function AssessmentWeb() {
           ref,
           callback: (response) => {
             alert("Payment complete! Reference: " + response.reference);
-            // Optionally, send response.reference to backend to verify
           },
           onClose: () => {
-            handleNext(); // Proceed to the next step when payment is closed
+            alert("Payment window closed.");
           },
         });
+    
         paystack.openIframe();
-      } catch (error) {
-        // Handle network or API errors
-        setErrorMessage(
-          "Failed to initiate payment. Please check your network connection and try again."
-        );
-        console.error("Payment error:", error);
+      } catch (err) {
+        console.error("Error initiating payment:", err);
+        alert(err.response?.data?.message || "Failed to initiate payment. Please try again.");
       }
     };
-
+  
     return (
       <div>
-        {/* Payment Button */}
         <button
           onClick={handlePayment}
           className="bg-[#785491] text-white w-full hover:bg-[#f3eff8] hover:text-[#3d3d3d] px-4 py-4 font-semibold rounded-lg"
@@ -178,7 +179,7 @@ function AssessmentWeb() {
             </div>
           )}
 
-          <PayButton />
+          <PayButton amount={2000} />
 
           <ConfirmedExamPayment
             isOpen={isModalOpen}

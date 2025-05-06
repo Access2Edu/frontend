@@ -11,11 +11,17 @@ export const updateStudent = (studentId, data) =>
 export const deleteStudent = (studentId) =>
   api.post(`/api/v1/students/delete-student/${studentId}`);
 export const getAllSubjects = () => api.get('/api/v1/students/get-all-subject');
-export const initiateCardPayment = (paymentData) =>
-  api.post('/api/v1/students/card-payment', paymentData);
+
+export const initiatePayment = (paymentData) =>
+  api.post('/api/v1/payment/initiatePayment', paymentData);
+
+export const verifyPayment = (data) => api.post('/api/v1/payment/initiatePayment', data);
+
 export const initiateBankPayment = (paymentData) =>
   api.post('/api/v1/students/card-payment', paymentData);
-export const verifyPayment = (data) => api.post('/api/v1/students/verify-payment', data);
+
+
+
 export const sendForgotPasswordOTP = (email) =>
   api.post('/api/v1/students/send-forgot-password-otp', { email });
 export const forgotPassword = (otp, newPassword) =>

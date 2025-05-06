@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
-
 import { googleAuth } from "../../../services/studentServices";
 
 function SocialMediaSignIn() {
@@ -8,108 +7,103 @@ function SocialMediaSignIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Initialize the auth providers when component mounts
   useEffect(() => {
-    // Load Google API
-    const loadGoogleScript = () => {
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeGoogleAuth;
-      document.body.appendChild(script);
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+          callback: handleGoogleResponse,
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("googleSignInButton"),
+          { theme: "outline", size: "large" }
+        );
+      } else {
+        setError("Google API failed to load.");
+      }
     };
-  
-
-    loadGoogleScript();
-    
+    document.body.appendChild(script);
   }, []);
 
-  // Google Authentication setup
-  const initializeGoogleAuth = () => {
-    if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com", // Replace with your actual Google Client ID
-        callback: handleGoogleResponse,
-      });
-
-      // Render the Google Sign-In button
-      window.google.accounts.id.renderButton(
-        document.getElementById("googleSignInButton"), // ID of the container where the button will be rendered
-        { theme: "outline", size: "large" } // Customize the button
-      );
-    } else {
-      setError("Google API failed to load.");
-    }
-  };
-
-    
-
   const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
   
-    try {
-      // Call your Google API function here
-      const response = await googleAuth(); // Replace with your actual function name
+      try {
+        // Ensure the Google API is available
+        if (!window.google || !window.google.accounts) {
+          throw new Error("Google API is not loaded.");
+        }
   
-      if (response) {
-        // Assuming the response contains user details
-        const { name, email, picture, token } = response;
+        // Prompt the user to sign in and get the token
+        window.google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed || notification.isSkippedMoment) {
+            setError("Google Sign-In was canceled or could not be displayed.");
+            setLoading(false);
+            return;
+          }
   
-        setUser({
-          name,
-          email,
-          picture,
-          provider: "Google",
-          token,
+          // Retrieve the token from the callback
+          window.google.accounts.id.initialize({
+            client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+            callback: async (response) => {
+              if (!response.credential) {
+                setError("Google Sign-In failed. No credentials received.");
+                setLoading(false);
+                return;
+              }
+  
+              try {
+                // Call the googleAuth function with the token
+                const { data } = await googleAuth({ token: response.credential });
+  
+                // Set the user state with the retrieved details
+                setUser({
+                  name: data.name,
+                  email: data.email,
+                  picture: data.picture,
+                  provider: "Google",
+                  token: data.token,
+                });
+              } catch (err) {
+                setError(err.response?.data?.message || "An error occurred during Google Sign-In.");
+              } finally {
+                setLoading(false);
+              }
+            },
+          });
         });
-      } else {
-        setError("Google Sign-In failed. Please try again.");
+      } catch (err) {
+        setError(err.message || "An error occurred during Google Sign-In.");
+        setLoading(false);
       }
+    };
+
+
+  const handleGoogleResponse = async (response) => {
+    if (!response.credential) return;
+    setLoading(true);
+    try {
+      const { data } = await googleAuth({ token: response.credential });
+      setUser({
+        name: data.name,
+        email: data.email,
+        picture: data.picture,
+        provider: "Google",
+        token: data.token,
+      });
     } catch (err) {
-      setError("An error occurred during Google Sign-In.");
-      console.error(err);
+      setError(err.response?.data?.message || "Google Sign-In failed.");
     } finally {
       setLoading(false);
     }
   };
- 
 
-  // Handle Google Sign-in response
-  const handleGoogleResponse = (response) => {
-    if (response.credential) {
-      // Decode the JWT token to get user information
-      const base64Url = response.credential.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split("")
-          .map((c) => {
-            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-          })
-          .join("")
-      );
-
-      const { name, email, picture } = JSON.parse(jsonPayload);
-
-      setUser({
-        name,
-        email,
-        picture,
-        provider: "Google",
-        token: response.credential,
-      });
-    }
-
-    setLoading(false);
-  };
-
-  // Handle sign out
-  const handleSignOut = () => {
-    setUser(null);
-    // Additional sign out logic for each provider if needed
-  };
+  const handleSignOut = () => setUser(null);
 
   if (user) {
     return (

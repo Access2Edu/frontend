@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { loginStudent } from "../../../services/studentServices"; // Import loginStudent
+import { loginStudent } from "../../../services/studentServices";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../AuthContext"; // Import useAuth
 
 function LoginForm() {
   const navigate = useNavigate();
+  const { setStudent } = useAuth(); // Access setstudent from AuthContext
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,43 +29,64 @@ function LoginForm() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-
+  
     if (!formData.email || !formData.password) {
-      setError("Email and password are required.");
+      console.log("Validation failed:", formData);
+      setError(!formData.email ? "Email is required" : "Password is required");
       setIsSubmitting(false);
       return;
     }
-
+  
     try {
-      // Use loginStudent from studentServices
+      console.log("Form Data Sent to Backend:", formData);
       const response = await loginStudent(formData);
-
-      // Handle success response
+      console.log("Response from Backend:", response);
+  
       if (response.status === 200) {
-        const { token } = response.data; 
-
-        // Store the token
+        const { token, student, isNewStudent } = response.data;
+  
+        if (!student) {
+          console.error("User object is undefined in the response.");
+          setError("Login failed. Please try again.");
+          setIsSubmitting(false);
+          return;
+        }
+  
         if (keepMeSignedIn) {
           localStorage.setItem("authToken", token);
+          localStorage.setItem("student", JSON.stringify(student)); // Store user data
+          console.log("Token and user data stored in localStorage:", token, student);
         } else {
           sessionStorage.setItem("authToken", token);
+          sessionStorage.setItem("student", JSON.stringify(student)); // Store user data
+          console.log("Token and user data stored in sessionStorage:", token, student);
         }
-
-        // Redirect or show success message
-        alert("Login successful!");
-        console.log("Logged in as:", formData.email);
-        // Redirect to dashboard after successful login
-        navigate("/dashboard");
+  
+        setStudent(student); // Update AuthContext
+        console.log("User Data:", student);
+  
+        setError(
+          <p className="text-green-700 bg-green-100 p-4 rounded-lg text-center font-medium">
+            Login successful! Redirecting to dashboard...
+          </p>
+        );
+  
+        setTimeout(() => {
+          if (isNewStudent) {
+            navigate("/select-classes");
+          } else {
+            navigate("/dashboard");
+          }
+        }, 2000);
       }
     } catch (err) {
-      // Handle error response
+      console.error("Login Error:", err);
       setError(
         err.response?.data?.message || "Something went wrong. Please try again."
       );
     } finally {
       setIsSubmitting(false);
     }
-
   };
 
   return (

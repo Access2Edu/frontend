@@ -103,11 +103,11 @@ function SignupForm() {
 
     try {
       // Call the API to register the student
-      await registerStudent(formData);
+      const response = await registerStudent(formData);
 
       setFormMessage(
         <p className="text-green-700 bg-green-100 p-4 rounded-lg text-center font-medium">
-          Registration successful! Redirecting to login...
+          {response?.data?.message || "Registration successful! Redirecting to login..."}
         </p>
       );
 
@@ -210,20 +210,7 @@ function SignupForm() {
         />
         {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
       </div>
-
-      {/* Parent/Guardian Name */}
-      <div className="grid gap-2">
-        <label htmlFor="gName">Parent/Guardian Name</label>
-        <input
-          type="text"
-          name="gName"
-          id="gName"
-          placeholder="Parent/Guardian Name"
-          className="p-4 border-1 border-[#7c7c7c] rounded-md"
-          value={formData.gName}
-          onChange={handleChange}
-        />
-      </div>
+      
 
       {/* Password */}
       <div className="grid gap-2">

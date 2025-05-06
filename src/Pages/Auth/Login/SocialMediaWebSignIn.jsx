@@ -1,188 +1,104 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
+import { googleAuth } from "../../../services/studentServices";
 
 function SocialMediaWebSignIn() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Initialize the auth providers when component mounts
   useEffect(() => {
-    // Load Google API
-    const loadGoogleScript = () => {
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeGoogleAuth;
-      document.body.appendChild(script);
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+          callback: handleGoogleResponse,
+        });
+      } else {
+        setError("Google API failed to load.");
+      }
     };
-
-    // Load Microsoft API
-    const loadMicrosoftScript = () => {
-      const script = document.createElement("script");
-      script.src =
-        "https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js";
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeMicrosoftAuth;
-      document.body.appendChild(script);
-    };
-
-    // Apple Sign-in doesn't require a separate script load
-    // It uses a REST API approach
-
-    loadGoogleScript();
-    loadMicrosoftScript();
+    document.body.appendChild(script);
   }, []);
 
-  // Google Authentication setup
-  const initializeGoogleAuth = () => {
-    if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com", // Replace with your actual Google Client ID
-        callback: handleGoogleResponse,
-      });
-
-      // Render the Google Sign-In button
-      window.google.accounts.id.renderButton(
-        document.getElementById("googleSignInButton"), // ID of the container where the button will be rendered
-        { theme: "outline", size: "large" } // Customize the button
-      );
-    } else {
-      setError("Google API failed to load.");
-    }
-  };
-
-  // Microsoft Authentication setup
-  const initializeMicrosoftAuth = () => {
-    if (window.msal) {
-      const msalConfig = {
-        auth: {
-          clientId: "YOUR_MICROSOFT_CLIENT_ID", // Replace with your client ID
-          authority: "https://login.microsoftonline.com/common",
-          redirectUri: window.location.origin,
-        },
-        cache: {
-          cacheLocation: "sessionStorage",
-          storeAuthStateInCookie: false,
-        },
-      };
-
-      window.msalInstance = new window.msal.PublicClientApplication(msalConfig);
-    }
-  };
-
-  // Google Sign-in handler
-  const handleGoogleSignIn = () => {
-    setLoading(true);
-    setError(null);
-
-    if (window.google?.accounts.id) {
-      // Avoid using prompt (FedCM issue), use One Tap or button
-      // Fallback if identity-credentials is not supported
-      setError("Google One Tap login requires a supported browser context.");
-      setLoading(false);
-    } else {
-      setError("Google Sign-In failed to load");
-      setLoading(false);
-    }
-  };
-
-  // Microsoft Sign-in handler
-  const handleMicrosoftSignIn = async () => {
+  const handleGoogleSignIn = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      if (window.msalInstance) {
-        const loginRequest = {
-          scopes: ["user.read"],
-        };
-
-        const response = await window.msalInstance.loginPopup(loginRequest);
-        if (response) {
-          // Get the user info
-          const user = response.account;
-          setUser({
-            name: user.name,
-            email: user.username,
-            provider: "Microsoft",
-            token: response.accessToken,
-          });
-        }
-      } else {
-        setError("Microsoft Sign-In failed to load");
+      // Ensure the Google API is available
+      if (!window.google || !window.google.accounts) {
+        throw new Error("Google API is not loaded.");
       }
-    } catch (error) {
-      setError("Microsoft Sign-In failed: " + error.message);
-    }
 
-    setLoading(false);
-  };
+      // Prompt the user to sign in and get the token
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed || notification.isSkippedMoment) {
+          setError("Google Sign-In was canceled or could not be displayed.");
+          setLoading(false);
+          return;
+        }
 
-  // Apple Sign-in handler
-  const handleAppleSignIn = async () => {
-    setLoading(true);
-    setError(null);
+        // Retrieve the token from the callback
+        window.google.accounts.id.initialize({
+          client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+          callback: async (response) => {
+            if (!response.credential) {
+              setError("Google Sign-In failed. No credentials received.");
+              setLoading(false);
+              return;
+            }
 
-    try {
-      // Apple Sign In uses a different approach
-      // It requires a server-side component to validate the token
-      // and exchange for user information
+            try {
+              // Call the googleAuth function with the token
+              const { data } = await googleAuth({ token: response.credential });
 
-      // For Apple Sign In, you typically:
-      // 1. Redirect to Apple's OAuth URL
-      // 2. Handle the callback from Apple on your backend
-      // 3. Process the token and get user info on your server
-
-      // A simplified client-side approach:
-      window.location.href = `https://appleid.apple.com/auth/authorize?client_id=${YOUR_APPLE_SERVICE_ID}&redirect_uri=${encodeURIComponent(
-        window.location.origin + "/auth/apple/callback"
-      )}&response_type=code id_token&scope=name email&response_mode=form_post`;
-
-      // Note: You'll need a server endpoint to handle the callback
-      // This is just for demonstration purposes
-    } catch (error) {
-      setError("Apple Sign-In failed: " + error.message);
+              // Set the user state with the retrieved details
+              setUser({
+                name: data.name,
+                email: data.email,
+                picture: data.picture,
+                provider: "Google",
+                token: data.token,
+              });
+            } catch (err) {
+              setError(err.response?.data?.message || "An error occurred during Google Sign-In.");
+            } finally {
+              setLoading(false);
+            }
+          },
+        });
+      });
+    } catch (err) {
+      setError(err.message || "An error occurred during Google Sign-In.");
       setLoading(false);
     }
   };
 
-  // Handle Google Sign-in response
-  const handleGoogleResponse = (response) => {
-    if (response.credential) {
-      // Decode the JWT token to get user information
-      const base64Url = response.credential.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split("")
-          .map((c) => {
-            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-          })
-          .join("")
-      );
-
-      const { name, email, picture } = JSON.parse(jsonPayload);
-
+  const handleGoogleResponse = async (response) => {
+    if (!response.credential) return;
+    setLoading(true);
+    try {
+      const { data } = await googleAuth({ token: response.credential });
       setUser({
-        name,
-        email,
-        picture,
+        name: data.name,
+        email: data.email,
+        picture: data.picture,
         provider: "Google",
-        token: response.credential,
+        token: data.token,
       });
+    } catch (err) {
+      setError(err.response?.data?.message || "Google Sign-In failed.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
-  // Handle sign out
-  const handleSignOut = () => {
-    setUser(null);
-    // Additional sign out logic for each provider if needed
-  };
+  const handleSignOut = () => setUser(null);
 
   if (user) {
     return (
@@ -211,20 +127,11 @@ function SocialMediaWebSignIn() {
     <div className="otherSignIn grid gap-3 p-6">
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}{" "}
+          {error}
         </div>
       )}
 
       <div className="flex justify-center gap-10 pt-4 pb-10">
-        {/* Microsoft Sign-in Button */}
-        <button onClick={handleMicrosoftSignIn} disabled={loading}>
-          <img
-            src="src/assets/logos_microsoft-icon.svg"
-            alt="Microsoft Icon"
-            className="w-10 h-10"
-          />
-        </button>
-
         {/* Google Sign-in Button */}
         <button onClick={handleGoogleSignIn} disabled={loading}>
           <img
@@ -232,15 +139,7 @@ function SocialMediaWebSignIn() {
             alt="Google Icon"
             className="w-10 h-10"
           />
-        </button>
-
-        {/* Apple Sign-in Button */}
-        <button onClick={handleAppleSignIn} disabled={loading}>
-          <img
-            src="src/assets/ic_outline-apple.svg"
-            alt="Apple Icon"
-            className="w-10 h-10"
-          />
+          
         </button>
       </div>
     </div>

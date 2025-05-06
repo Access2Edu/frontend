@@ -71,7 +71,8 @@ function WebSignupForm() {
     event.preventDefault();
     setFormMessage("");
     setIsSubmitting(true);
-
+  
+    // Validate required fields
     if (
       !formData.firstName ||
       !formData.lastName ||
@@ -90,7 +91,8 @@ function WebSignupForm() {
       setIsSubmitting(false);
       return;
     }
-
+  
+    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       setFormMessage(
         <p className="text-red-400 bg-red-200 p-4 rounded-lg text-center font-medium">
@@ -100,20 +102,21 @@ function WebSignupForm() {
       setIsSubmitting(false);
       return;
     }
-
+  
     try {
       // Call the API to register the student
-      await registerStudent(formData);
-
+      const response = await registerStudent(formData);
+  
       setFormMessage(
         <p className="text-green-700 bg-green-100 p-4 rounded-lg text-center font-medium">
-          Registration successful! Redirecting to login...
+          {response?.data?.message || "Registration successful! Redirecting to login..."}
         </p>
       );
-
+  
       // Redirect to login page after a delay
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
+      console.error(err); // Log the error for debugging
       setFormMessage(
         <p className="text-red-400 bg-red-200 p-4 rounded-lg text-center font-medium">
           {err.response?.data?.message || "Failed to register. Try again."}

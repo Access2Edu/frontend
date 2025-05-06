@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://20.39.208.187:3000/', // Adjust based on your route prefix
-  withCredentials: true, // if using cookies
+  baseURL: 'http://localhost:3000/', 
+  // baseURL: 'http://20.39.208.187:3000/', 
+  withCredentials: true, 
   headers: {
     'Content-Type': 'application/json',
   },

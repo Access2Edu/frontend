@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material";
 import LiveDate from "./LiveDate";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router-dom";
 
 const SIDEBAR_ITEMS = [
   {
@@ -61,6 +62,19 @@ const SIDEBAR_ITEMS = [
 
 function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("student");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("student");
+    setStudent(null); // Clear user state
+    navigate("/login");
+  };
+
+
+
   return (
     //Sidebar
     <div className="w-80 h-full bg-[#785491] flex justify-between  rounded-br-2xl flex-col">
@@ -110,7 +124,7 @@ function Sidebar() {
       </div>
       <div className="flex justify-between pl-6 pr-6 pb-15 text-[#f5f5f5]  items-center">
         <LiveDate />
-        <div className="flex gap-2 cursor-pointer text-sm">
+        <div className="flex gap-2 cursor-pointer text-sm" onClick={handleLogout}>
           <LogoutIcon />
           <p>Sign Out</p>
         </div>

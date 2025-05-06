@@ -45,10 +45,11 @@ function ForgotPasswordForm() {
 
     try {
       // Send OTP request to the API
-      await sendForgotPasswordOTP(email);
+      const response = await sendForgotPasswordOTP(email); // Capture the response from the backend
       setAlert({
         type: "success",
-        message: "OTP sent successfully. Check your email.",
+        message:
+          response.data?.message || "OTP sent successfully. Check your email.", // Use backend message or fallback
       });
       setTimer(60);
       setCanResend(false);
@@ -80,10 +81,10 @@ function ForgotPasswordForm() {
 
     try {
       // Verify OTP with the API
-      await forgotPassword(otpValue, null); // Pass OTP only for verification
+      const response = await forgotPassword(otpValue, null); // Pass OTP only for verification
       setAlert({
         type: "success",
-        message: "OTP verified. You can now reset your password.",
+        message:  response.data?.message || "OTP verified. You can now reset your password.",
       });
       setStep("reset");
     } catch (err) {

@@ -70,11 +70,11 @@ function ResetPasswordMobile() {
       const token = searchParams.get("token");
 
       // Call the API to reset the password
-      await forgotPassword({ newPassword: password, token });
+      const response = await forgotPassword({ newPassword: password, token });
 
       setFormMessage(
         <p className="text-green-700 bg-green-100 p-4 text-center font-medium">
-          Password reset successfully! Redirecting to login...
+           {response.data?.message || "Password reset successfully! Redirecting to login..."}
         </p>
       );
 
