@@ -148,7 +148,7 @@ function SignupVerificationMobile() {
       {step === "request" ? (
         <div className="p-6">
           <h1 className="font-bold text-center text-2xl p-6">
-            Forgot Password?
+            Verify Email
           </h1>
           {renderAlert()}
           <p className="text-center p-6 pl-4 pr-4 text-[#525252]">
