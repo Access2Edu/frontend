@@ -23,7 +23,7 @@ import Result from './Pages/Dashboard/Result';
 import Fees from './Pages/Dashboard/Fees';
 import Settings from './Pages/Dashboard/Settings';
 import ProtectedRoute from './ProtectedRoute';
-import SignupVerification from './Pages/Auth/Signup/SignUpVerification';
+import SignupVerification from './Pages/Auth/Signup/SignupVerification';
 import UserPolicy from './Pages/UserPolicy';
 import './styles/global.css';
 
