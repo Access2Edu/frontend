@@ -12,7 +12,7 @@ const FAQSection = () => {
         </details>
         <details>
           <summary>How much does Access2Edu cost?</summary>
-          <p>To be decided by the responses from our survey.</p>
+          <p>N30,000 per Term.</p>
         </details>
         <details>
           <summary>How do our partnerships work?</summary>

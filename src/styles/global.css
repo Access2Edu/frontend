@@ -60,163 +60,341 @@ body {
 }
 
 /* Hero Section */
-.hero-section {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 50px;
-background: #F5F5F5;
-color: black;
-text-align: left;
-position: relative; /* for absolute children like affiliate card and stars */
+.desktop-buttons,
+.mobile-buttons {
+  display: none;
 }
 
-.hero-content {
-max-width: 50%;
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .hero-section {
+    padding: 2rem 1rem;
+    background: #fffbe7;
+  }
+
+  .hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mobile-affiliate-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .students-img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-top: -640px;
+  }
+
+  .affiliate-image {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    margin-top: -200px;
+    margin-left: -120px;
+    
+  }
+
+  .quote {
+    display: none; /* Removed from layout */
+  }
+
+  .mobile-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 550px;
+  }
+
+  .button {
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    
+  }
+
+  .button.primary {
+    background-color: #6f4a8e;
+    color: white;
+  }
+
+  .button.secondary {
+    background-color: white;
+    border: 1px solid #ccc;
+    color: black;
+  }
 }
 
-.hero-content h1 {
-font-size: 50px;
-margin-bottom: 20px;
+/* Desktop Styles */
+@media (min-width: 769px) {
+  .desktop-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .mobile-affiliate-card,
+  .mobile-buttons {
+    display: none;
+  }
+
+  .hero-buttons .button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .button.secondary {
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+
+  /* NEW: Align hero image + affiliate card side by side */
+  /* Desktop Styles */
+@media (min-width: 769px) {
+  .desktop-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .mobile-affiliate-card,
+  .mobile-buttons {
+    display: none;
+  }
+
+  .hero-buttons .button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .button.secondary {
+    background-color: #6f4a8e;
+    border: 1px solid #ccc;
+  }
+
+  /* Desktop layout fix */
+.desktop-affiliate-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-.hero-content p {
-font-size: 30px;
-margin-bottom: 20px;
+
+.hero-image-wrapper .students-img {
+  width: 100%;
+  border-radius: 12px;
+
 }
 
-.hero-buttons {
-margin-top: 40px;
-}
-
-.button {
-padding: 15px 35px;
-background: #785491;
-color: white;
-border: none;
-border-radius: 5px;
-cursor: pointer;
-margin-right: 25px;
-font-size: 20px;
-}
-
-.secondary {
-background: #785491;
-color: white;
-}
-
-/* Typing Animation */
-.typing-text {
-display: inline-block;
-overflow: hidden;
-border-right: 2px solid #6f4a8e;
-white-space: nowrap;
-animation: typing 3s steps(11, end), blink-caret 0.75s step-end infinite;
-color: #6f4a8e;
-}
-
-@keyframes typing {
-from {
-  width: 0;
-}
-to {
-  width: 11ch;
-}
-}
-
-@keyframes blink-caret {
-0%, 100% {
-  border-color: transparent;
-}
-50% {
-  border-color: #6f4a8e;
-}
-}
-
-/* Hero Image */
-.hero-image {
-position: relative;
-}
-
-.students-img {
-width: 100%;
-max-width: 500px;
-border-radius: 10px;
-}
-
-/* Affiliate Card */
-.affiliate-card {
-position: absolute;
-top: 260px;
-left: -130px;
-transform: rotate(-5deg);
-z-index: 3;
+.hero-image-wrapper .affiliate-card {
+  position: absolute;
+  bottom: -40px;
+  left: 30px;
+  background-color: #f5d7aa;
+  padding: 1rem;
+  border-radius: 12px;
+  width: 260px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .affiliate-image {
-width: 230px;
-border-radius: 12px;
-
+  width: 100%;
+  border-radius: 8px;
 }
 
-/* Quote Box */
-.quote-box {
-position: absolute;
-bottom: -40px;
-right: 0;
-background: #B4916C;
-color: white;
-padding: 20px 25px;
-max-width: 350px;
-border-radius: 20px;
-font-size: 16px;
-font-weight: 500;
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 50px;
+  background: #F5F5F5;
+  color: black;
+  text-align: left;
+  position: relative; /* for absolute children like affiliate card and stars */
+  }
+  
+  .hero-content {
+  max-width: 50%;
+  }
+  
+  .hero-content h1 {
+  font-size: 50px;
+  margin-bottom: 20px;
+  }
+  
+  .hero-content p {
+  font-size: 30px;
+  margin-bottom: 20px;
+  }
+  
+  .hero-buttons {
+  margin-top: 40px;
+  }
+  
+  .button {
+  padding: 15px 35px;
+  background: #785491;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 25px;
+  font-size: 20px;
+  }
+  
+  .secondary {
+  background: #785491;
+  color: white;
+  }
+  
+  .typing-text {
+    display: inline-block;
+    max-width: 11ch; /* Adjust based on the word length */
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-right: 2px solid #6f4a8e;
+    animation: typing 3s steps(11, end), blink-caret 0.75s step-end infinite;
+    color: #6f4a8e;
+  }
+
+  
+  
+  @keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 11ch;
+  }
+  }
+  
+  @keyframes blink-caret {
+  0%, 100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #6f4a8e;
+  }
+  }
+  
+  /* Hero Image */
+  .hero-image {
+  position: relative;
+  }
+  
+  .students-img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
+  margin-left: 900px;
+  margin-top: -430px;
+  }
+  
+  /* Affiliate Card */
+  .affiliate-card {
+  position: absolute;
+  top: 260px;
+  left: -130px;
+  transform: rotate(-5deg);
+  z-index: 3;
+  }
+  
+  .affiliate-image {
+  width: 230px;
+  border-radius: 12px;
+  margin-left: 1000px;
+  margin-top: -320px;
+  
+  }
+  
+  /* Quote Box */
+  .quote-box {
+  position: absolute;
+  bottom: -40px;
+  right: 0;
+  background: #B4916C;
+  color: white;
+  padding: 20px 25px;
+  max-width: 350px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  }
+  
+  /* Optional - Decorative Stars */
+  .star {
+  position: absolute;
+  width: 50px;
+  
+  }
+  
+  .star-top-left {
+  top: 90px;
+  left: 50px;
+  width: 80px;
+  }
+  
+  .star-top-meddle {
+  top: 330px;
+  left: 875px;
+  width: 90px;
+  }
+  
+  .star-top-up {
+  top: 150px;
+  left: 880px;
+  width: 60px;
+  }
+  
+  
+  .star-top-center {
+  top: 250px;
+  left: 290px;
+  width: 40px;
+  }
+  
+  .star-top-right {
+  top: 50px;
+  left: 600px;
+  width: 110px;
+  }
+  
+  
+  .star-bottom-right {
+  bottom: 135px;
+  right: 370px;
+  width: 80px;
+  }
+
+}
 }
 
-/* Optional - Decorative Stars */
-.star {
-position: absolute;
-width: 50px;
 
-}
-
-.star-top-left {
-top: 90px;
-left: 50px;
-width: 80px;
-}
-
-.star-top-meddle {
-top: 330px;
-left: 875px;
-width: 90px;
-}
-
-.star-top-up {
-top: 150px;
-left: 880px;
-width: 60px;
-}
-
-
-.star-top-center {
-top: 250px;
-left: 290px;
-width: 40px;
-}
-
-.star-top-right {
-top: 50px;
-left: 600px;
-width: 110px;
-}
-
-
-.star-bottom-right {
-bottom: 135px;
-right: 370px;
-width: 80px;
-}
 
 
 /* Stats Section */
@@ -500,7 +678,6 @@ color: white;
 .success-stories-container {
   font-family: 'Poppins', sans-serif;
   padding: 40px 20px;
-  background-color: #fefaf4;
   color: #1f1f1f;
 }
 
@@ -512,7 +689,6 @@ color: white;
   justify-self: center;
   align-items: center;
   gap: 40px;
-  background-color: #fff;
   padding: 40px;
   border-radius: 16px;
   margin-bottom: 60px;
@@ -556,7 +732,7 @@ color: white;
 
 /* ========== SUCCESS STORIES SECTION ========== */
 .success-stories {
-  background-color: #fff9f0;
+ 
   padding: 80px 20px;
   text-align: center;
 }
@@ -640,20 +816,19 @@ color: white;
 /* ========== STUDENTS SECTION ========== */
 .students-section {
   display: flex;
-  flex-wrap: wrap;
-  justify-items: center;
-  justify-self: center;
   align-items: center;
+  justify-content: center;
   gap: 550px;
-  margin-bottom: 60px;
-  margin-left: 60px;
+  margin: 60px;
 }
 
+/* Students image styling */
 .students-image img {
   width: 400px;
   border-radius: 16px;
 }
 
+/* Students content styling */
 .students-content h3 {
   font-size: 30px;
   font-weight: 800;
@@ -666,10 +841,10 @@ color: white;
   max-width: 400px;
 }
 
+/* Button styles */
 .btn-group {
   display: flex;
   gap: 15px;
-
 }
 
 .btn-primary {
@@ -689,6 +864,28 @@ color: white;
   color: #fff;
 }
 
+/* ========== Responsive Fix ========== */
+@media (max-width: 768px) {
+  .students-section {
+    flex-direction: column;
+    gap: 30px;
+    margin: 30px 20px;
+    text-align: center;
+  }
+
+  .students-image img {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .btn-group {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+
+
 /* ========== TEACHERS SECTION ========== */
 .teachers-section {
   display: flex;
@@ -697,7 +894,6 @@ color: white;
   justify-self: center; 
   justify-content: space-between;
   gap: 40px;
-  background-color: #fff;
   padding: 40px;
   border-radius: 16px;
   width: 80%;
@@ -748,6 +944,7 @@ color: white;
   .btn-group {
     justify-content: center;
   }
+  
 }
 
 
