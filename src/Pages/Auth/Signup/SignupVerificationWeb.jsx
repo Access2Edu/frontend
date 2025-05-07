@@ -135,7 +135,7 @@ function SignupVerificationWeb() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="bg-[#fff5d1] rounded-2xl p-10">
+      <div className="bg-[#fff5d1] rounded-2xl p-10 w-1/3">
         <img
           src="src/assets/Accesstoedu Logo.png"
           alt="Logo"
@@ -145,13 +145,13 @@ function SignupVerificationWeb() {
         {step === "request" ? (
           <div className="p-6">
             <h1 className="font-bold text-center text-2xl p-6">
-              Forgot Password?
+              Verify your Email
             </h1>
             {renderAlert()}
-            <p className="text-center p-6 pl-4 pr-4 text-[#525252]">
-              Enter your registered email to Verify your Email
-            </p>
-            <div className="grid gap-2 w-full mb-6">
+            {/* <p className="text-center p-6 pl-4 pr-4 text-[#525252]">
+              Enter your email to Verify
+            </p> */}
+            <div className="grid gap-2 w-full mb-6 mt-6">
               <label htmlFor="email">Email:</label>
               <input
                 type="email"

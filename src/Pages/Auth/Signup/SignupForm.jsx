@@ -112,7 +112,7 @@ function SignupForm() {
       );
 
       // Redirect to login page after a delay
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/signup-verification"), 2000);
     } catch (err) {
       setFormMessage(
         <p className="text-red-400 bg-red-200 p-4 rounded-lg text-center font-medium">
