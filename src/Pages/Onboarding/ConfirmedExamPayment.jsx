@@ -1,30 +1,12 @@
 import React from "react";
-import { verifyPayment } from "../../Payment"; // Import API function
+import PaymentSuccess from "../../PaymentSuccess";
+
 
 
 function ConfirmedExamPayment({ isOpen, onClose, handleContinue }) {
   if (!isOpen) return null;
 
-    //Verify Payment
-    const PaymentVerify = () => {
-      const [status, setStatus] = useState("Verifying...");
-      useEffect(() => {
-        const txRef = new URLSearchParams(window.location.search).get("tx_ref");
-        if (txRef) {
-          verifyPayment(txRef)
-            .then((res) => {
-              if (res.status === "success" && res.data.status === "successful") {
-                setStatus("Payment successful!");
-              } else {
-                setStatus("Payment verification failed.");
-              }
-            })
-            .catch(() => setStatus("An error occurred."));
-        }
-      }, []);
-      return <div>{status}</div>;
-    };
-
+  
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-gray-600/50 flex items-center justify-center z-50">
       <div className="grid justify-items-center rounded-2xl p-10 ml-4 mr-4 bg-[#fff5d1]">
@@ -35,7 +17,7 @@ function ConfirmedExamPayment({ isOpen, onClose, handleContinue }) {
         />
         <h1 className="font-bold text-[#181818] text-4xl p-6">Confirmed!</h1>
         <p className="p-4 text-center text-[#464646]">
-        <PaymentVerify />
+        <PaymentSuccess />
         </p>        
 
         <button

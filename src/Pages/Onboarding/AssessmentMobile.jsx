@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderWeb from "../../components/HeaderWeb";
-import { initializePayment } from "../../Payment"; // Import API function
+import InitiatePayment from "../../InitiatePayment";
 import { useAuth } from "../../AuthContext";
-import ConfirmedExamPayment from "./ConfirmedExamPayment";
+
 
 function AssessmentMobile() {
   const { student } = useAuth(); // Access the logged-in user's email
@@ -18,26 +18,26 @@ function AssessmentMobile() {
   const navigate = useNavigate();
 
   //Payment Button
-  const PayButton = () => {
-    const handlePayment = async () => {
-      try {
-        const payload = {
-          email: "user@example.com",
-          amount: 5000,
-          name: "John Doe",
-        };
-        const res = await initializePayment(payload);
-        if (res.status === "success") {
-          window.location.href = res.data.link;
-        } else {
-          alert("Payment initialization failed.");
-        }
-      } catch (err) {
-        alert("Error initializing payment");
-      }
-    };
-    return <button onClick={handlePayment} className="px-4 py-2 bg-[#78549d] cursor-pointer text-white rounded-lg">Pay with Flutterwave</button>;
-  };
+  // const PayButton = () => {
+  //   const handlePayment = async () => {
+  //     try {
+  //       const payload = {
+  //         email: "user@example.com",
+  //         amount: 5000,
+  //         name: "John Doe",
+  //       };
+  //       const res = await initializePayment(payload);
+  //       if (res.status === "success") {
+  //         window.location.href = res.data.link;
+  //       } else {
+  //         alert("Payment initialization failed.");
+  //       }
+  //     } catch (err) {
+  //       alert("Error initializing payment");
+  //     }
+  //   };
+  //   return <button onClick={handlePayment} className="px-4 py-2 bg-[#78549d] cursor-pointer text-white rounded-lg">Pay with Flutterwave</button>;
+  // };
 
 
 
@@ -147,13 +147,9 @@ function AssessmentMobile() {
             </div>
           )}
 
-          <PayButton amount={2000} />
+          <InitiatePayment handleContinue={handleNext} />        
 
-          <ConfirmedExamPayment
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            handleContinue={handleNext}
-          />
+          
         </div>
       </div>
     </div>,
