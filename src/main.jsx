@@ -1,7 +1,8 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
+
 import App from './App';
 import Login from './Pages/Auth/Login/Login';
 import Signup from './Pages/Auth/Signup/Signup';
@@ -23,11 +24,8 @@ import Fees from './Pages/Dashboard/Fees';
 import Settings from './Pages/Dashboard/Settings';
 import ProtectedRoute from './ProtectedRoute';
 import SignupVerification from './Pages/Auth/Signup/SignUpVerification';
-
-
-// Import global styles
-import './styles/global.css'
-
+import UserPolicy from './Pages/UserPolicy';
+import './styles/global.css';
 
 const router = createBrowserRouter([
   {
@@ -60,14 +58,13 @@ const router = createBrowserRouter([
     element: <SignupConfirmation />,
   },
   {
-      path: '/select-classes',
-      element: (
-        <ProtectedRoute>
-          <SelectClasses />
-        </ProtectedRoute>
-      ),
+    path: '/select-classes',
+    element: (
+      <ProtectedRoute>
+        <SelectClasses />
+      </ProtectedRoute>
+    ),
   },
-  
   {
     path: '/onboarding',
     element: (
@@ -130,16 +127,18 @@ const router = createBrowserRouter([
       }
     ]
   },
- 
+
+  // ✅ New User Policy route
+  {
+    path: '/user-policy',
+    element: <UserPolicy />,
+  },
 ]);
-
-
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </AuthProvider>
   </StrictMode>,
-)
-
+);

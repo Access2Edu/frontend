@@ -49,7 +49,7 @@ const Footer = () => {
           <h4>Terms & policies</h4>
           <ul>
             <li><a href="#">Accessibility</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="/user-policy">User Policy</a></li>
             <li><a href="#">Terms of service</a></li>
             <li><a href="#">Community Guidelines</a></li>
           </ul>
