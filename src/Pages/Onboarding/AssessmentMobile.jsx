@@ -228,7 +228,7 @@ function AssessmentMobile() {
               <button
                 onClick={handleNext}
                 className="bg-[#785491] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#e7def0] hover:text-[#3d3d3d]"
-                disabled={step === 2} //Check if payment is successful
+                //Check if payment is successful
               >
                 {step === 2 ? "Continue" : "Get Started"}
               </button>

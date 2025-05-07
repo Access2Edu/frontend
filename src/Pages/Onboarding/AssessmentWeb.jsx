@@ -237,7 +237,7 @@ function AssessmentWeb() {
               <button
                 onClick={handleNext}
                 className="bg-[#785491] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#e7def0] hover:text-[#3d3d3d]"
-                disabled={step === 2}
+                
               >
                 Continue
               </button>

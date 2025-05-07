@@ -114,7 +114,7 @@ function WebSignupForm() {
       );
   
       // Redirect to login page after a delay
-      setTimeout(() => navigate("/signup-verification"), 2000);
+      setTimeout(() => navigate("/signup-confirmation"), 2000);
     } catch (err) {
       console.error(err); // Log the error for debugging
       setFormMessage(

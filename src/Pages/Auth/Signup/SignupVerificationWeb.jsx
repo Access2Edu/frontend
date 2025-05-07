@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   sendSignUpOTP,
   verifySignupOTP,
+  registerStudent,
 } from "../../../services/studentServices"; // Import API functions
 
 function SignupVerificationWeb() {
@@ -43,7 +44,7 @@ function SignupVerificationWeb() {
 
     try {
       // Send OTP request to the API
-      const response = await sendSignUpOTP(email); // Capture the response from the backend
+      const response = await registerStudent(email); // Capture the response from the backend
       setAlert({
         type: "success",
         message:
